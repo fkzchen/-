@@ -1,0 +1,33 @@
+% 读取CSV文件
+filename = 'None.csv'; % 替换为您的CSV文件路径
+data = readtable(filename); % 读取CSV文件为表格
+
+% 假设第四列是秒数，第六列是CH1信号
+time = data.Var4;  % 根据实际列名修改为第四列（时间）
+ch1 = data.Var5;   % 根据实际列名修改为第六列（信号）
+
+% 采样率
+Fs = 500000; % 采样率500 kHz
+
+% 绘制时频谱图
+figure;
+window = hamming(256);  % 使用Hamming窗口，您也可以选择其他窗口函数
+noverlap = 128;         % 窗口重叠部分的长度
+nfft = 512;             % FFT点数
+[S,F,T,P] = spectrogram(ch1, window, noverlap, nfft, Fs, 'yaxis'); % 计算时频谱
+
+% 转换功率谱为dB
+PdB = 10*log10(P);
+
+% 绘制
+imagesc(T*1000, F/1000, PdB); % T时间轴转换为ms，F频率轴转换为kHz
+axis xy; % 翻转y轴
+colormap(jet); % 设置伪彩色图的颜色
+colorbar; % 添加颜色条
+caxis([-100 -30]); % 设置功率范围，根据数据调整
+title('时频谱图', 'FontSize', 14);
+xlabel('时间 (ms)', 'FontSize', 12);
+ylabel('频率 (kHz)', 'FontSize', 12);
+
+% 可选：限制频率显示范围，例如只显示 0~100 kHz
+ylim([0 100]);   
