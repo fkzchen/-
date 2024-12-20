@@ -1,0 +1,25 @@
+% 读取CSV文件
+filename = 'Have.csv'; % 替换为您的CSV文件路径
+data = readtable(filename); % 读取CSV文件为表格
+
+% 查看表格的列名，以确认数据结构
+disp(data.Properties.VariableNames);
+
+% 假设第五列是秒数，第六列是CH1信号，使用实际列名访问数据
+time = data.Var4;  % 请根据实际列名修改
+ch1 = data.Var5;   % 请根据实际列名修改
+
+% 采样率
+Fs = 20000000; % 采样率200MHz
+dt = 1 / Fs;    % 计算样本间隔
+
+% 绘制CH1波形
+figure;
+plot(time, ch1, 'LineWidth', 1.5);
+title('CH1 波形');
+xlabel('时间 (秒)');
+ylabel('CH1 信号值');
+grid on;
+
+% 可选：限制显示范围，例如显示前 0.01 秒的波形
+xlim([0, 0.01]); % 限制显示范围，您可以根据需求调整
